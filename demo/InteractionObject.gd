@@ -9,4 +9,4 @@ func on_interact():
 	bdb.append_text("[color=blue]lorem[/color] ipsum", 100)
 	bdb.append_text("\n", 100)
 	bdb.append_text("[shake]Shakeee[/shake] and [rainbow] RAINBOW[/rainbow]", 100)
-	bdb.append_text("[tornado]and many[/torn`ado][fade]more other effects[/fade]", 100)
+	bdb.append_text("[tornado]and many[/tornado][fade]more other effects[/fade]", 100)

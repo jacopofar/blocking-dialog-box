@@ -21,12 +21,15 @@ var active: bool = false
 
 func _ready():
 	set_process(false)
-#	set_process_input(false)
+	set_process_input(false)
+
 
 func show_box():
+	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
+	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
 	background = NinePatchRect.new()
-	background.rect_position = Vector2(padding, OS.window_size.y - height - padding)
-	background.rect_size = Vector2(OS.window_size.x - 2 * padding, height)
+	background.rect_position = Vector2(padding, window_size_y - height - padding)
+	background.rect_size = Vector2(window_size_x - 2 * padding, height)
 	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
@@ -37,10 +40,21 @@ func show_box():
 	label = RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.scroll_following = true
-	label.rect_position = Vector2(padding * 2 + patch_size, OS.window_size.y - height + padding)
-	label.rect_size = Vector2(OS.window_size.x - padding * 2, height - patch_size  - padding * 2)
+	label.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
+	label.rect_size = Vector2(window_size_x - padding * 2, height - patch_size  - padding * 2)
 	label.set("custom_colors/default_color", Color(0,0,0))
 	add_child(label)
+	set_process_input(true)
+	set_process(true)
+	active = true
+
+func hide_box():
+	background.queue_free()
+	label.queue_free()
+	active = false
+	set_process_input(false)
+	set_process(false)
+	
 	
 	
 func _process(delta):
@@ -79,5 +93,36 @@ func append_text(bbcode: String, duration: int):
 				element_times.append(duration)
 			else:
 				current_tag = "["
-	set_process(true)
 
+func _input(event):
+	if(event is InputEventKey and event.is_pressed() ):
+		capture_input()
+	if(event is InputEventKey and not event.is_pressed()):
+		get_tree().set_input_as_handled()	
+	# the player can click to proceed, too, to read further
+	if event.is_action_pressed("click"):
+		capture_input()
+	# do not let a rogue release event propagate
+	if event.is_action_released("click"):
+		capture_input()
+	# same for touch screen
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			capture_input()
+		else:
+			# the release event is not used but is caught to avoid spurious events propagation
+			if active:
+				get_tree().set_input_as_handled()
+
+# helper to react to the input event, preventing it from propagating
+# and closing the dialogue box when done
+func capture_input():
+	# if the buffer is not empty the dialogue is not over
+	if elements.size() > 0:
+		# let's wait for it without letting the input propagate
+		get_tree().set_input_as_handled()
+	else:	
+		if active:
+			# the last input closes the box but still is not propagated
+			get_tree().set_input_as_handled()
+			hide_box()
