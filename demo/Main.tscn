@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://demo/InteractionObject.tscn" type="PackedScene" id=1]
+[ext_resource path="res://demo/ExamplePlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/blocking_dialog_box/blocking_dialog_box.gd" type="Script" id=3]
+[ext_resource path="res://demo/background.png" type="Texture" id=4]
+
+[node name="Main" type="Node"]
+
+[node name="BackgroundTexture" type="TextureRect" parent="."]
+margin_left = -120.006
+margin_top = -306.798
+margin_right = 423.994
+margin_bottom = 251.202
+mouse_filter = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 143.452, -33.1533 )
+
+[node name="Object" parent="." instance=ExtResource( 1 )]
+position = Vector2( 76.0448, -31.9119 )
+
+[node name="BlockingDialogBox" type="CanvasLayer" parent="."]
+script = ExtResource( 3 )
