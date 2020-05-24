@@ -1,9 +1,14 @@
 extends CanvasLayer
 class_name BlockingDialogBox
 
-export var patch_size: int = 12
-export var padding: int = 6
+signal break_reached
+signal break_ended
 
+# size of the NinePatch frame
+export var patch_size: int = 12
+# distance to let the text breathe
+export var padding: int = 6
+# textbox height
 export var height: int = 128
 
 # elements to display, either single characters or BBCode tags
@@ -18,6 +23,9 @@ var background: NinePatchRect
 
 # is it visible and catching inputs?
 var active: bool = false
+# is it waiting for explicit input to continue?
+var in_break: bool = false
+var break_content: String
 
 func _ready():
 	set_process(false)
@@ -41,7 +49,7 @@ func show_box():
 	label.bbcode_enabled = true
 	label.scroll_following = true
 	label.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
-	label.rect_size = Vector2(window_size_x - padding * 2, height - patch_size  - padding * 2)
+	label.rect_size = Vector2(window_size_x - patch_size - padding * 2, height - patch_size  - padding * 2)
 	label.set("custom_colors/default_color", Color(0,0,0))
 	add_child(label)
 	set_process_input(true)
@@ -56,11 +64,19 @@ func hide_box():
 	set_process(false)
 	
 	
-	
 func _process(delta):
 	elapsed += delta * 1000
 	while true:
 		if elapsed > element_times[0]:
+			if elements[0].left(6) == "[break":
+				in_break = true
+				break_content = elements[0].right(7)
+				break_content = break_content.left(break_content.length() - 1)
+				emit_signal("break_reached", break_content)
+				set_process(false)
+				element_times.remove(0)
+				elements.remove(0)
+				
 			# carry the remaining time for the next element
 			elapsed -= element_times[0]
 			label.set_bbcode(label.get_bbcode() + elements[0])
@@ -95,28 +111,28 @@ func append_text(bbcode: String, duration: int):
 				current_tag = "["
 
 func _input(event):
-	if(event is InputEventKey and event.is_pressed() ):
-		capture_input()
-	if(event is InputEventKey and not event.is_pressed()):
-		get_tree().set_input_as_handled()	
-	# the player can click to proceed, too, to read further
-	if event.is_action_pressed("click"):
-		capture_input()
-	# do not let a rogue release event propagate
-	if event.is_action_released("click"):
-		capture_input()
-	# same for touch screen
-	if event is InputEventScreenTouch:
-		if event.pressed:
+	if event is InputEventKey:
+		if event.is_pressed():
 			capture_input()
 		else:
-			# the release event is not used but is caught to avoid spurious events propagation
-			if active:
-				get_tree().set_input_as_handled()
+			get_tree().set_input_as_handled()	
+	# the player can click to proceed, too, to read further
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		if event.pressed:
+			capture_input()
+		# do not let a rogue release event propagate
+		else:
+			get_tree().set_input_as_handled()	
 
 # helper to react to the input event, preventing it from propagating
 # and closing the dialogue box when done
 func capture_input():
+	if in_break:
+		in_break = false
+		get_tree().set_input_as_handled()
+		set_process(true)
+		emit_signal("break_ended", break_content)
+		return
 	# if the buffer is not empty the dialogue is not over
 	if elements.size() > 0:
 		# let's wait for it without letting the input propagate

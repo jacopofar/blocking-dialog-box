@@ -75,12 +75,12 @@ func _unhandled_input(event):
 			touch_initial_direction = position.direction_to(world_position)
 			return
 	
-	if event.is_action_pressed("click"):
+	if event is InputEventMouseButton and event.pressed:
 		if position.distance_to(get_global_mouse_position()) < interaction_range:
 			is_interaction = true
 		else:
 			mouse_pressed = true
-	if event.is_action_released("click"):
+	if event is InputEventMouseButton and not event.pressed:
 		mouse_pressed = false
 	if is_interaction:
 		var target = $RayCast2D.get_collider()
