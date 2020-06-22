@@ -61,7 +61,11 @@ func hide_box():
 	active = false
 	set_process_input(false)
 	set_process(false)
-	
+
+func ask_input():
+	if not active:
+		show_box()
+		active = true
 
 func _input(event):
 	if event is InputEventKey:

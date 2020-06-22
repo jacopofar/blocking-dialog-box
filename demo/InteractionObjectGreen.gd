@@ -10,3 +10,4 @@ func on_interact():
 	bdb.append_text("Ùnïçodë? Natürlich, when the font allows that. 今日は!！\n", 100)
 	bdb.append_text("[shake]Woooow[/shake], a [rainbow]RAINBOW[/rainbow]", 50)
 	bdb.append_text("[tornado]and many[/tornado] [fade]more other effects[/fade]", 50)
+
