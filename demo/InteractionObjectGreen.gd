@@ -7,6 +7,6 @@ func on_interact():
 	bdb.append_text("I write text faster! (fast)\n", 30)
 	bdb.append_text("Or even immediate\n", 0)	
 	bdb.append_text("With [color=blue]colors[/color]: [color=green]lorem[/color] ipsum bla bla this is just some demo text nothing to see here.", 10)
-	bdb.append_text("Ùnïçodë? Natürlich, when the font allows that. すごい！\n", 100)
+	bdb.append_text("Ùnïçodë? Natürlich, when the font allows that. 今日は!！\n", 100)
 	bdb.append_text("[shake]Woooow[/shake], a [rainbow]RAINBOW[/rainbow]", 50)
 	bdb.append_text("[tornado]and many[/tornado] [fade]more other effects[/fade]", 50)

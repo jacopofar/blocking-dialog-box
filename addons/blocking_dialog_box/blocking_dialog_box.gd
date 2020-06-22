@@ -51,6 +51,13 @@ func show_box():
 	label.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
 	label.rect_size = Vector2(window_size_x - patch_size - padding * 2, height - patch_size  - padding * 2)
 	label.set("custom_colors/default_color", Color(0,0,0))
+	
+	# this is the code to load a font and use it
+	var dynamic_font = DynamicFont.new()
+	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
+	dynamic_font.size = 18
+	label.set("custom_fonts/normal_font", dynamic_font)
+
 	add_child(label)
 	set_process_input(true)
 	set_process(true)
