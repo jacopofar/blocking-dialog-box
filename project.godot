@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "BlockingDialogBox",
 "language": "GDScript",
 "path": "res://addons/blocking_dialog_box/blocking_dialog_box.gd"
+}, {
+"base": "CanvasLayer",
+"class": "BlockingInputBox",
+"language": "GDScript",
+"path": "res://addons/blocking_dialog_box/blocking_input_box.gd"
 } ]
 _global_script_class_icons={
-"BlockingDialogBox": ""
+"BlockingDialogBox": "",
+"BlockingInputBox": ""
 }
 
 [application]
