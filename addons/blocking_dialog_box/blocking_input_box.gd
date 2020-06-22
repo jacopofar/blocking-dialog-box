@@ -8,9 +8,15 @@ signal text_inserted
 export var patch_size: int = 12
 # distance to let the text breathe
 export var padding: int = 6
-# textbox height
-export var height: int = 128
 
+# distance from left and right borders
+export var hmargin: int = 60
+
+# textbox height
+export var height: int = 64
+
+# textbox bottom margin
+export var bottom_margin: int = 64
 
 var text_edit: TextEdit
 var background: NinePatchRect
@@ -30,8 +36,8 @@ func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
 	background = NinePatchRect.new()
-	background.rect_position = Vector2(padding, window_size_y - height - padding)
-	background.rect_size = Vector2(window_size_x - 2 * padding, height)
+	background.rect_position = Vector2(hmargin, window_size_y - height - bottom_margin)
+	background.rect_size = Vector2(window_size_x - 2 * hmargin, height)
 	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
@@ -40,10 +46,10 @@ func show_box():
 	add_child(background)
 	
 	text_edit = TextEdit.new()
-	text_edit.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
-	text_edit.rect_size = Vector2(window_size_x - patch_size - padding * 2, height - patch_size  - padding * 2)
+	text_edit.rect_position = Vector2(hmargin + padding, window_size_y - height - bottom_margin + padding)
+	text_edit.rect_size = Vector2(window_size_x - 2 * (hmargin + padding), height - 2 * padding)
 	text_edit.set("custom_colors/default_color", Color(0,0,0))
-	
+
 	# this is the code to load a font and use it
 	var dynamic_font = DynamicFont.new()
 	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
@@ -82,7 +88,7 @@ func _input(event):
 			get_tree().set_input_as_handled()	
 
 # helper to react to the input event, preventing it from propagating
-# and closing the dialogue box when done
+# and closing the input box when done
 func capture_input():
 	if in_break:
 		in_break = false
