@@ -11,10 +11,10 @@
 [node name="Main" type="Node"]
 
 [node name="BackgroundTexture" type="TextureRect" parent="."]
-margin_left = -120.006
-margin_top = -306.798
-margin_right = 423.994
-margin_bottom = 251.202
+margin_left = -120.665
+margin_top = -303.718
+margin_right = 423.335
+margin_bottom = 254.282
 mouse_filter = 2
 texture = ExtResource( 4 )
 stretch_mode = 2

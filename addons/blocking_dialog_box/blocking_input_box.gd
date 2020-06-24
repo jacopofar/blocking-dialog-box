@@ -18,7 +18,7 @@ export var height: int = 64
 # textbox bottom margin
 export var bottom_margin: int = 64
 
-var text_edit: TextEdit
+var text_edit: LineEdit
 var background: NinePatchRect
 
 # is it visible and catching inputs?
@@ -45,21 +45,28 @@ func show_box():
 	background.patch_margin_left = patch_size
 	add_child(background)
 	
-	text_edit = TextEdit.new()
+	text_edit = LineEdit.new()
 	text_edit.rect_position = Vector2(hmargin + padding, window_size_y - height - bottom_margin + padding)
 	text_edit.rect_size = Vector2(window_size_x - 2 * (hmargin + padding), height - 2 * padding)
-	text_edit.set("custom_colors/default_color", Color(0,0,0))
+	var edit_style = StyleBoxFlat.new()
+	edit_style.set_bg_color(Color.transparent)
+	text_edit.set("custom_styles/normal", edit_style)
+	text_edit.expand_to_text_length = true
+	text_edit.caret_blink = true
+	text_edit.set("custom_colors/font_color", Color(0,0,0))
+
 
 	# this is the code to load a font and use it
 	var dynamic_font = DynamicFont.new()
 	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
 	dynamic_font.size = 18
-	text_edit.set("custom_fonts/normal_font", dynamic_font)
-
+	text_edit.set("custom_fonts/font", dynamic_font)
+	
 	add_child(text_edit)
 	set_process_input(true)
 	set_process(true)
 	active = true
+	text_edit.grab_focus()
 
 func hide_box():
 	background.queue_free()
@@ -73,26 +80,11 @@ func ask_input():
 		show_box()
 		active = true
 
-func _input(event):
-	if event is InputEventKey:
-		if event.is_pressed():
-			capture_input()
-		else:
-			get_tree().set_input_as_handled()	
-	# the player can click to proceed, too, to read further
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		if event.pressed:
-			capture_input()
-		# do not let a rogue release event propagate
-		else:
-			get_tree().set_input_as_handled()	
+# TODO manage the signal for when the user presses enter
 
-# helper to react to the input event, preventing it from propagating
-# and closing the input box when done
-func capture_input():
-	if in_break:
-		in_break = false
+func _input(event):
+	# keyboard events are fine, the control already handles them
+	# prevent mouse and touch events as far as this is active
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
 		get_tree().set_input_as_handled()
-		set_process(true)
-		emit_signal("break_ended", break_content)
-		return
+		
