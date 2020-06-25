@@ -15,7 +15,7 @@ export var height: int = 128
 var elements: PoolStringArray = []
 # time in ms to wait each element
 var element_times: PoolIntArray = []
-# time since the last element was added
+# time since the last element was added to the label
 var elapsed: int = 0
 
 var label: RichTextLabel
@@ -74,6 +74,9 @@ func hide_box():
 func _process(delta):
 	elapsed += delta * 1000
 	while true:
+		if elements.size() == 0:
+			set_process(false)
+			break
 		if elapsed > element_times[0]:
 			if elements[0].left(6) == "[break":
 				in_break = true
@@ -83,6 +86,7 @@ func _process(delta):
 				set_process(false)
 				element_times.remove(0)
 				elements.remove(0)
+				break
 				
 			# carry the remaining time for the next element
 			elapsed -= element_times[0]
@@ -91,9 +95,7 @@ func _process(delta):
 			elements.remove(0)
 		else:
 			break
-		if elements.size() == 0:
-			set_process(false)
-			break
+
 
 func append_text(bbcode: String, duration: int):
 	var current_tag: String = ""
