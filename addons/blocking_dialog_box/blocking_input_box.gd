@@ -76,16 +76,32 @@ func hide_box():
 	set_process(false)
 
 func ask_input():
+	# this is ugly, but on mobile there's no keyboard usually
+	if OS.get_name() == "HTML5":
+		var text = JavaScript.eval("prompt('Enter:', '');", true)
+		emit_signal("text_entered", text)
+		return
 	if not active:
 		show_box()
 		active = true
-		text_edit.connect("text_entered", self, "text_entered")	
+		text_edit.connect("text_entered", self, "text_entered")
+	else:
+		print("WARNING: asking for input while input box is already open!")
 
 func text_entered(text: String):
 	emit_signal("text_entered", text)
 	hide_box()
 
 func _input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_ENTER:
+				emit_signal("text_entered", text_edit.text)
+				hide_box()
+				get_tree().set_input_as_handled()	
+				return
+			text_edit.text += char(event.unicode)
+		get_tree().set_input_as_handled()		
 	# keyboard events are fine, the control already handles them
 	# prevent mouse and touch events as far as this is active
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
