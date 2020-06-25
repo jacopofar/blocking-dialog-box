@@ -83,6 +83,7 @@ func ask_input():
 
 func text_entered(text: String):
 	emit_signal("text_entered", text)
+	hide_box()
 
 func _input(event):
 	# keyboard events are fine, the control already handles them
