@@ -1,7 +1,7 @@
 extends CanvasLayer
 class_name BlockingInputBox
 
-signal text_inserted
+signal text_entered
 
 
 # size of the NinePatch frame
@@ -79,8 +79,10 @@ func ask_input():
 	if not active:
 		show_box()
 		active = true
+		text_edit.connect("text_entered", self, "text_entered")	
 
-# TODO manage the signal for when the user presses enter
+func text_entered(text: String):
+	emit_signal("text_entered", text)
 
 func _input(event):
 	# keyboard events are fine, the control already handles them
