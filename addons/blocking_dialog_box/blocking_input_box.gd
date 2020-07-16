@@ -76,11 +76,22 @@ func hide_box():
 	set_process(false)
 
 func ask_input():
-	# this is ugly, but on mobile there's no keyboard usually
+	# this is ugly, but on mobile there's no keyboard usually :(
 	if OS.get_name() == "HTML5":
-		var text = JavaScript.eval("prompt('Enter:', '');", true)
-		emit_signal("text_entered", text)
-		return
+		# extra ugly!
+		# possible alternatives:
+		# 1. Create an HTML input element and focus it to trigger the virtual keyboard to appear
+		#    This is tricky because focus can only be given in an "input context"
+		# 2. Always show a virtual keyboard
+		#    Such a keyboard would probably destroy i18n and accessibility
+		# 3. Add button to switch
+		#    The user could see some button to invoke the JS window.prompt()
+		#    Could be hard to understand
+		var detected_mobile = JavaScript.eval("/Mobi|Android/i.test(navigator.userAgent)", true)
+		if detected_mobile:
+			var text = JavaScript.eval("prompt('Enter:', '');", true)
+			emit_signal("text_entered", text)
+			return
 	if not active:
 		show_box()
 		active = true

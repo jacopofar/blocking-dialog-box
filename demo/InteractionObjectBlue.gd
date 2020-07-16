@@ -14,7 +14,7 @@ func on_interact():
 
 func ask_name(_unused: String):
 	bib.ask_input()
-	bib.connect("text_entered", self, "when_name_inserted")	
+	bib.connect("text_entered", self, "when_name_inserted")
 
 func when_name_inserted(name: String):
 	bdb.append_text("Ah, so your name is [rainbow]" + name + "[/rainbow]", 10)
