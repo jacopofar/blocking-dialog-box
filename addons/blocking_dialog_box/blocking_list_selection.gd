@@ -112,6 +112,8 @@ func _calculate_swipe(swipe_end):
 			scroll_relative(1)
 		else:
 			scroll_relative(-1)
+	else:
+		choice(item_list.get_selected_items()[0])
 
 
 func _input(event):
