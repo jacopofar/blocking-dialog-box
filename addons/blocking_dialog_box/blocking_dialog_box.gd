@@ -4,6 +4,7 @@ class_name BlockingDialogBox
 signal break_reached
 signal break_ended
 
+
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe

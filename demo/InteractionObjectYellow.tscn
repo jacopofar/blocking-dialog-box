@@ -3,7 +3,7 @@
 [ext_resource path="res://demo/InteractionObjectYellow.gd" type="Script" id=1]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 20.5776, 20.4369 )
+extents = Vector2( 19.7994, 20.0472 )
 
 [sub_resource type="Animation" id=2]
 resource_name = "rotate"

@@ -26,6 +26,8 @@ var active: bool = false
 # the possible choices for the user
 var choices: PoolStringArray
 
+# track the start of a multitouch event to later detect a swipe
+var swipe_start: Vector2
 
 func _ready():
 	set_process(false)
@@ -76,6 +78,7 @@ func hide_box():
 	set_process_input(false)
 	set_process(false)
 
+
 func ask_value(elements: PoolStringArray):
 	choices = elements
 	if not active:
@@ -97,7 +100,20 @@ func scroll_relative(offset: int):
 	target = max(target, 0)
 	item_list.select(target)
 	item_list.ensure_current_is_visible()
-	
+
+
+func _calculate_swipe(swipe_end):
+	if swipe_start == null:
+		return
+	var swipe = swipe_end - swipe_start
+	print(swipe)
+	if abs(swipe.y) > 30:
+		if swipe.y > 0:
+			scroll_relative(1)
+		else:
+			scroll_relative(-1)
+
+
 func _input(event):
 	if event is InputEventKey:
 		if event.pressed:
@@ -127,4 +143,9 @@ func _input(event):
 			choice(item_list.get_selected_items()[0])
 		get_tree().set_input_as_handled()
 	if event is InputEventScreenTouch:
+		# solution from https://godotengine.org/qa/19386/how-to-detect-swipe-using-3-0
+		if event.pressed:
+			swipe_start = item_list.get_local_mouse_position()
+		else:
+			_calculate_swipe(item_list.get_local_mouse_position())
 		get_tree().set_input_as_handled()
