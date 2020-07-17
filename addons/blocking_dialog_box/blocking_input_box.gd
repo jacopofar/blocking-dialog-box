@@ -103,6 +103,7 @@ func text_entered(text: String):
 	emit_signal("text_entered", text)
 	hide_box()
 
+
 func _input(event):
 	if event is InputEventKey:
 		if event.pressed:
@@ -111,7 +112,10 @@ func _input(event):
 				hide_box()
 				get_tree().set_input_as_handled()	
 				return
-			text_edit.text += char(event.unicode)
+			if event.scancode == KEY_BACKSPACE:
+				text_edit.text = text_edit.text.left(text_edit.text.length() - 1)
+			else:
+				text_edit.text += char(event.unicode)
 		get_tree().set_input_as_handled()		
 	# keyboard events are fine, the control already handles them
 	# prevent mouse and touch events as far as this is active
