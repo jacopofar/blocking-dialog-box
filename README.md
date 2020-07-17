@@ -13,6 +13,8 @@ Features:
 * __Blocks__ the input while dilogues is open
 * Decent unicode support (it includes Noto Sans font)
 
+![how input is given](screenshot_input.png)
+![how text is displayed](screenshot_text.png)
 
 ## How to use
 

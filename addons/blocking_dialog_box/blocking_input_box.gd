@@ -7,7 +7,7 @@ signal text_entered
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe
-export var padding: int = 6
+export var padding: int = 10
 
 # distance from left and right borders
 export var hmargin: int = 60
@@ -16,7 +16,7 @@ export var hmargin: int = 60
 export var height: int = 64
 
 # textbox bottom margin
-export var bottom_margin: int = 64
+export var bottom_margin: int = 120
 
 var text_edit: LineEdit
 var background: NinePatchRect
@@ -51,9 +51,11 @@ func show_box():
 	var edit_style = StyleBoxFlat.new()
 	edit_style.set_bg_color(Color.transparent)
 	text_edit.set("custom_styles/normal", edit_style)
-	text_edit.expand_to_text_length = true
-	text_edit.caret_blink = true
+	text_edit.set("custom_colors/cursor_color", Color(0,0,0))
 	text_edit.set("custom_colors/font_color", Color(0,0,0))
+	text_edit.caret_blink = true
+	text_edit.expand_to_text_length = false
+	
 
 
 	# this is the code to load a font and use it
@@ -116,6 +118,7 @@ func _input(event):
 				text_edit.text = text_edit.text.left(text_edit.text.length() - 1)
 			else:
 				text_edit.text += char(event.unicode)
+			text_edit.caret_position = text_edit.text.length()
 		get_tree().set_input_as_handled()		
 	# keyboard events are fine, the control already handles them
 	# prevent mouse and touch events as far as this is active
