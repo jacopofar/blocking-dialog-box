@@ -6,7 +6,7 @@ signal choice
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe
-export var padding: int = 6
+export var padding: int = 12
 
 # distance from left and right borders
 export var hmargin: int = 60
@@ -59,9 +59,17 @@ func show_box():
 	var edit_style = StyleBoxFlat.new()
 	edit_style.set_bg_color(Color.transparent)
 	item_list.set("custom_styles/bg", edit_style)
+	# text color of non-selected items
+	item_list.set("custom_colors/font_color", Color(0.3, 0.3, 0.3))
+	# text color of selected items
+	item_list.set("custom_colors/font_color_selected", Color(0, 0, 0))
+	# line between elements
+	item_list.set("custom_colors/guide_color", Color(0.9, 0.9, 0.9))
 	
-	item_list.set("custom_colors/font_color", Color(0.1,0.1,0.1))
-	item_list.set("custom_colors/font_color_selected", Color(0,0,0))
+	var dynamic_font = DynamicFont.new()
+	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
+	dynamic_font.size = 18
+	item_list.set("custom_fonts/font", dynamic_font)
 	
 	add_child(background)
 	add_child(item_list)
@@ -113,7 +121,13 @@ func _calculate_swipe(swipe_end):
 		else:
 			scroll_relative(-1)
 	else:
-		choice(item_list.get_selected_items()[0])
+		var target = item_list.get_item_at_position(swipe_end, true)
+		# if you click on an item, you choose it
+		# if you click outside you choose the currently selected one
+		if target == -1:
+			choice(item_list.get_selected_items()[0])
+		else:
+			choice(target)
 
 
 func _input(event):
