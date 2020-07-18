@@ -21,10 +21,10 @@ func ask_number(_unused: String):
 	bls.ask_value(numbers)
 	bls.connect("choice", self, "when_item_selected")
 
-func when_item_selected(name: String):
+func when_item_selected(index: int, text: String):
 	bls.disconnect("choice", self, "when_item_selected")
 	# this is to avoid the double input, one to close the selection and the other to continue the dialog
 	# it's not striclty necessary, but nicer
 	bdb.hide_box()
-	bdb.append_text("Ah, so your favorite number is [color=red]" + name + "[/color]", 10)
+	bdb.append_text("Ah, so your favorite number is [color=red]" + text + "[/color]", 10)
 	bdb.append_text("\nGood to know!", 10)

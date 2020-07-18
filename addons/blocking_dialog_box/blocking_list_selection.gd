@@ -1,7 +1,7 @@
 extends CanvasLayer
 class_name BlockingListSelection
 
-signal choice
+signal choice(index, text)
 
 # size of the NinePatch frame
 export var patch_size: int = 12
@@ -97,7 +97,7 @@ func ask_value(elements: PoolStringArray):
 		print("WARNING: asking for input while input box is already open!")
 
 func choice(index: int):
-	emit_signal("choice", choices[index])
+	emit_signal("choice", index, choices[index])
 	hide_box()
 
 
