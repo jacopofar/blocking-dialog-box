@@ -9,4 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Allow the user to go accelerate a dialogue by frantically pressing the action
   input
+- BlockingListSelection return the index of the choice (thanks @Wavesonics)
+- Add signal for when dialog hides (thanks @Wavesonics)
 - The changelog itself :)
