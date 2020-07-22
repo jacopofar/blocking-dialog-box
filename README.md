@@ -8,6 +8,7 @@ Features:
 
 * Rich text support (formatting, colors, effects, etc.) using BBCode
 * Display test immediately or writing it at a given speed, mix speeds
+* Allows the player to accelerate a dialogue (can be disabled)
 * Place breaks and associate signals to them
 * Supports keyboard, mouse and multitouch screen
 * __Blocks__ the input while dilogues is open
