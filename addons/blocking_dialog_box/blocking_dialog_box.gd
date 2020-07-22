@@ -3,6 +3,7 @@ class_name BlockingDialogBox
 
 signal break_reached
 signal break_ended
+signal box_hidden
 
 
 # size of the NinePatch frame
@@ -70,6 +71,7 @@ func hide_box():
 	active = false
 	set_process_input(false)
 	set_process(false)
+	emit_signal("box_hidden")
 	
 	
 func _process(delta):
