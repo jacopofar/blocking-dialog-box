@@ -10,15 +10,16 @@ func _ready():
 func on_interact():
 	bdb.append_text("Hello\n", 20)
 	bdb.append_text("What's your name?\n[break ask_name]", 10)
-	bdb.connect("break_reached", self, "ask_name")	
+	yield(bdb, "break_reached")
+	ask_name()
 
-func ask_name(_unused: String):
-	bdb.disconnect("break_reached", self, "ask_name")
+
+func ask_name():
 	bib.ask_input()
-	bib.connect("text_entered", self, "when_name_inserted")
+	var name: String = yield(bib, "text_entered")
+	when_name_inserted(name)
 
 func when_name_inserted(name: String):
-	bib.disconnect("text_entered", self, "when_name_inserted")
 	# avoid double input by closing the box instead of waiting for the break to finish
 	# not strictly necessary but nice
 	bdb.hide_box()

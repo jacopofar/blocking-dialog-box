@@ -2,7 +2,7 @@
 
 This project contains custom node types to easily implement a dialogue system with input and choices in __Godot 3.2__.
 
-It's designed to work with mouse, keyboard and multitouch, and in HTML5 deployments
+It's designed to work with mouse, keyboard and multitouch, and in HTML5 deployments.
 
 Features:
 
@@ -10,7 +10,7 @@ Features:
 * Display test immediately or writing it at a given speed, mix speeds
 * Allows the player to accelerate a dialogue (can be disabled)
 * Place breaks and associate signals to them
-* Supports keyboard, mouse and multitouch screen
+* Supports keyboard, mouse and multitouch input
 * __Blocks__ the input while dilogues is open
 * Decent unicode support (it includes Noto Sans font)
 
@@ -19,12 +19,12 @@ Features:
 
 ## How to use
 
-You can see the included demo for a complete practical usage example, but here's a textual documentation
+You can see the included demo for a complete usage example, but here's a textual documentation
 
 ### Step 0 - install the plugin
 
-This repository also works as a Godot project that you can use to try the demo.
-To use the plugin only in your game you need only the `addons/blocking_dialog_box` folder. Copy it inside your `addons` folder then enable the plugin in `Project -> project settings -> addons`
+This repository works as a Godot project that you can use to run the demo.
+To only use the plugin in your game you need only the `addons/blocking_dialog_box` folder. Copy it inside your `addons` folder then enable the plugin under `Project -> project settings -> addons`
 
 ### Step 1 - insert the nodes in your project
 
@@ -57,30 +57,44 @@ To detect breaks do this:
 
 ```GDScript
 func your_function():
-  bdb.connect("break_ended", self, "rotate_me")
   bdb.append_text("wait for input and rotate[break clockwise]\n", 10)
-  bdb.append_text("wait for input and rotate[break clockwise]\n", 10)
+	var direction: String = yield(bdb, "break_ended")
+	rotate_me(direction)
 	bdb.append_text("wait for input and rotate back[break counterclockwise]\n", 10)
+	direction = yield(bdb, "break_ended")
+	rotate_me(direction)
 
 func rotate_me(direction: String):
 	if direction == "clockwise":
 		$AnimationPlayer.play("rotate")
 	if direction == "counterclockwise":
 		$AnimationPlayer.play_backwards("rotate")
-		bdb.disconnect("break_ended", self, "rotate_me")
 ```
 
 the `[break X]` tag will wait for the player input and then produce `break_reached` and `break_ended` signals containing the `X` parameter string.
-The player can accelerate by pressing the input button (enter, or the mouse, or the multi-touch) use `[set_skip 0]` will make a dialogue unskippable to the player (use it with caution!) while `[set_skip 300]` will set back the default time skip uipon input to 300 milliseconds.
+The player can accelerate a dialogue by pressing the input button (enter, or the mouse, or the multi-touch) using `[set_skip 0]` will make a dialogue unskippable to the player (use it with caution!) while `[set_skip 300]` will set back the default time skip 300 milliseconds upon input.
 
-Notice that the signal is disconnected later to avoid reacting to signals from other nodes using the dialogue box.
+Here `yield` is used to make the code more readable, but you can also manually connect and disconnect:
+
+```GDScript
+  bdb.append_text("wait for input and rotate[break clockwise]\n", 10)
+  bdb.connect("break_ended", self, "rotate_me")
+
+def rotate_me(direction: String):
+  bdb.disconnect("break_ended", self, "rotate_me")
+  # do something with the direction
+```
+this is less concise and prone to error if you forget to disconnect but allows you to trigger multiple events and manage signals independently.
+__Important note__: you cannot always use `yield` like this, for example it doesn't work on the selection element. In that case use signals explicitly. You can find examples in the included demo.
+Hopefully in Godot 4 there will be `await` with a nicer usage.
 
 The input function is similar:
 
 ```GDScript
 var bib: BlockingInputBox = get_node("/root/Main/BlockingInputBox")
 bib.ask_input()
-bib.connect("text_entered", self, "when_name_inserted")
+var name: String = yield(bib, "text_entered")
+# here do something with the name
 ```
 
 same to select an element from a list:

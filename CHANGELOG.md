@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-07-23
+
 ### Added
+- Use yield when possible to handle signals
 - Allow the user to go accelerate a dialogue by frantically pressing the action
   input
 - BlockingListSelection return the index of the choice (thanks @Wavesonics)
