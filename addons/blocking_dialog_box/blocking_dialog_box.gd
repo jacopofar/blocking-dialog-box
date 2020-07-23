@@ -19,6 +19,11 @@ var elements: PoolStringArray = []
 var element_times: PoolIntArray = []
 # time since the last element was added to the label
 var elapsed: int = 0
+# extra time added by the player by pressing the input button
+# used to accelerate the dialogue
+var skipped_time: int = 0
+# how much the time will be accelerated for a single pressure of the input button
+var skip_interval: int = 300
 
 var label: RichTextLabel
 var background: NinePatchRect
@@ -46,14 +51,14 @@ func show_box():
 	background.patch_margin_bottom = patch_size
 	background.patch_margin_left = patch_size
 	add_child(background)
-	
+
 	label = RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.scroll_following = true
 	label.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
 	label.rect_size = Vector2(window_size_x - patch_size - padding * 2, height - patch_size  - padding * 2)
 	label.set("custom_colors/default_color", Color(0,0,0))
-	
+
 	# this is the code to load a font and use it
 	var dynamic_font = DynamicFont.new()
 	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
@@ -72,10 +77,12 @@ func hide_box():
 	set_process_input(false)
 	set_process(false)
 	emit_signal("box_hidden")
-	
-	
+
+
 func _process(delta):
-	elapsed += delta * 1000
+	# sum the real time that passed and the time the user skipped by pressing input
+	elapsed += delta * 1000 + skipped_time
+	skipped_time = 0
 	while true:
 		if elements.size() == 0:
 			set_process(false)
@@ -90,7 +97,14 @@ func _process(delta):
 				element_times.remove(0)
 				elements.remove(0)
 				break
-				
+
+			if elements[0].left(9) == "[set_skip":
+				var skip_content = elements[0].right(9)
+				skip_content = skip_content.left(skip_content.length() - 1)
+				skip_interval = int(skip_content)
+				element_times.remove(0)
+				elements.remove(0)
+				break
 			# carry the remaining time for the next element
 			elapsed -= element_times[0]
 			label.set_bbcode(label.get_bbcode() + elements[0])
@@ -127,14 +141,14 @@ func _input(event):
 		if event.is_pressed():
 			capture_input()
 		else:
-			get_tree().set_input_as_handled()	
+			get_tree().set_input_as_handled()
 	# the player can click to proceed, too, to read further
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
 		if event.pressed:
 			capture_input()
 		# do not let a rogue release event propagate
 		else:
-			get_tree().set_input_as_handled()	
+			get_tree().set_input_as_handled()
 
 # helper to react to the input event, preventing it from propagating
 # and closing the dialogue box when done
@@ -145,11 +159,13 @@ func capture_input():
 		set_process(true)
 		emit_signal("break_ended", break_content)
 		return
+	else:
+		skipped_time += skip_interval
 	# if the buffer is not empty the dialogue is not over
 	if elements.size() > 0:
 		# let's wait for it without letting the input propagate
 		get_tree().set_input_as_handled()
-	else:	
+	else:
 		if active:
 			# the last input closes the box but still is not propagated
 			get_tree().set_input_as_handled()

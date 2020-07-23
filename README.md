@@ -8,6 +8,7 @@ Features:
 
 * Rich text support (formatting, colors, effects, etc.) using BBCode
 * Display test immediately or writing it at a given speed, mix speeds
+* Allows the player to accelerate a dialogue (can be disabled)
 * Place breaks and associate signals to them
 * Supports keyboard, mouse and multitouch screen
 * __Blocks__ the input while dilogues is open
@@ -70,6 +71,7 @@ func rotate_me(direction: String):
 ```
 
 the `[break X]` tag will wait for the player input and then produce `break_reached` and `break_ended` signals containing the `X` parameter string.
+The player can accelerate by pressing the input button (enter, or the mouse, or the multi-touch) use `[set_skip 0]` will make a dialogue unskippable to the player (use it with caution!) while `[set_skip 300]` will set back the default time skip uipon input to 300 milliseconds.
 
 Notice that the signal is disconnected later to avoid reacting to signals from other nodes using the dialogue box.
 
