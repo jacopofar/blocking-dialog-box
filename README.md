@@ -14,8 +14,10 @@ Features:
 * __Blocks__ the input while dilogues is open
 * Decent unicode support (it includes Noto Sans font)
 
-![how input is given](screenshot_input.png)
-![how text is displayed](screenshot_text.png)
+![how input is given](screenshots/input.png)
+![how text is displayed](screenshots/text.png)
+![how a choice is made](screenshots/choice.png)
+
 
 ## How to use
 
