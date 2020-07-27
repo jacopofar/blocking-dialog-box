@@ -39,6 +39,57 @@ func _ready():
 	set_process_input(false)
 
 
+
+func _process(delta):
+	# sum the real time that passed and the time the user skipped by pressing input
+	elapsed += delta * 1000 + skipped_time
+	skipped_time = 0
+	while true:
+		if elements.size() == 0:
+			set_process(false)
+			break
+		if elapsed > element_times[0]:
+			if elements[0].left(6) == "[break":
+				in_break = true
+				break_content = elements[0].right(7)
+				break_content = break_content.left(break_content.length() - 1)
+				emit_signal("break_reached", break_content)
+				set_process(false)
+				element_times.remove(0)
+				elements.remove(0)
+				break
+
+			if elements[0].left(9) == "[set_skip":
+				var skip_content = elements[0].right(9)
+				skip_content = skip_content.left(skip_content.length() - 1)
+				skip_interval = int(skip_content)
+				element_times.remove(0)
+				elements.remove(0)
+				break
+			# carry the remaining time for the next element
+			elapsed -= element_times[0]
+			label.set_bbcode(label.get_bbcode() + elements[0])
+			element_times.remove(0)
+			elements.remove(0)
+		else:
+			break
+
+
+func _input(event):
+	if event is InputEventKey:
+		if event.is_pressed():
+			capture_input()
+		else:
+			get_tree().set_input_as_handled()
+	# the player can click to proceed, too, to read further
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		if event.pressed:
+			capture_input()
+		# do not let a rogue release event propagate
+		else:
+			get_tree().set_input_as_handled()
+
+
 func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
@@ -78,6 +129,7 @@ func show_box():
 	set_process(true)
 	active = true
 
+
 func hide_box():
 	background.queue_free()
 	label.queue_free()
@@ -85,41 +137,6 @@ func hide_box():
 	set_process_input(false)
 	set_process(false)
 	emit_signal("box_hidden")
-
-
-func _process(delta):
-	# sum the real time that passed and the time the user skipped by pressing input
-	elapsed += delta * 1000 + skipped_time
-	skipped_time = 0
-	while true:
-		if elements.size() == 0:
-			set_process(false)
-			break
-		if elapsed > element_times[0]:
-			if elements[0].left(6) == "[break":
-				in_break = true
-				break_content = elements[0].right(7)
-				break_content = break_content.left(break_content.length() - 1)
-				emit_signal("break_reached", break_content)
-				set_process(false)
-				element_times.remove(0)
-				elements.remove(0)
-				break
-
-			if elements[0].left(9) == "[set_skip":
-				var skip_content = elements[0].right(9)
-				skip_content = skip_content.left(skip_content.length() - 1)
-				skip_interval = int(skip_content)
-				element_times.remove(0)
-				elements.remove(0)
-				break
-			# carry the remaining time for the next element
-			elapsed -= element_times[0]
-			label.set_bbcode(label.get_bbcode() + elements[0])
-			element_times.remove(0)
-			elements.remove(0)
-		else:
-			break
 
 
 func append_text(bbcode: String, duration: int):
@@ -144,19 +161,6 @@ func append_text(bbcode: String, duration: int):
 			else:
 				current_tag = "["
 
-func _input(event):
-	if event is InputEventKey:
-		if event.is_pressed():
-			capture_input()
-		else:
-			get_tree().set_input_as_handled()
-	# the player can click to proceed, too, to read further
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		if event.pressed:
-			capture_input()
-		# do not let a rogue release event propagate
-		else:
-			get_tree().set_input_as_handled()
 
 # helper to react to the input event, preventing it from propagating
 # and closing the dialogue box when done

@@ -34,6 +34,43 @@ func _ready():
 	set_process_input(false)
 
 
+func _input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_DOWN:
+				scroll_relative(1)
+			if event.scancode == KEY_UP:
+				scroll_relative(-1)
+			if event.scancode == KEY_PAGEUP:
+				scroll_relative(-5)
+			if event.scancode == KEY_PAGEDOWN:
+				scroll_relative(5)
+			if event.scancode == KEY_ENTER:
+				choice(item_list.get_selected_items()[0])
+			
+		get_tree().set_input_as_handled()	
+	if event is InputEventMouseButton:
+		if event.pressed and not event.doubleclick:
+			if event.button_index == BUTTON_WHEEL_UP:
+				scroll_relative(1)
+			if event.button_index == BUTTON_WHEEL_DOWN:
+				scroll_relative(-1)
+			if event.button_index == BUTTON_LEFT:
+				var target = item_list.get_item_at_position(item_list.get_local_mouse_position(), true)
+				if target != -1:
+					item_list.select(target)
+		if event.doubleclick:
+			choice(item_list.get_selected_items()[0])
+		get_tree().set_input_as_handled()
+	if event is InputEventScreenTouch:
+		# solution from https://godotengine.org/qa/19386/how-to-detect-swipe-using-3-0
+		if event.pressed:
+			swipe_start = item_list.get_local_mouse_position()
+		else:
+			_calculate_swipe(item_list.get_local_mouse_position())
+		get_tree().set_input_as_handled()
+
+
 func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
@@ -140,40 +177,3 @@ func _calculate_swipe(swipe_end):
 			choice(item_list.get_selected_items()[0])
 		else:
 			choice(target)
-
-
-func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.scancode == KEY_DOWN:
-				scroll_relative(1)
-			if event.scancode == KEY_UP:
-				scroll_relative(-1)
-			if event.scancode == KEY_PAGEUP:
-				scroll_relative(-5)
-			if event.scancode == KEY_PAGEDOWN:
-				scroll_relative(5)
-			if event.scancode == KEY_ENTER:
-				choice(item_list.get_selected_items()[0])
-			
-		get_tree().set_input_as_handled()	
-	if event is InputEventMouseButton:
-		if event.pressed and not event.doubleclick:
-			if event.button_index == BUTTON_WHEEL_UP:
-				scroll_relative(1)
-			if event.button_index == BUTTON_WHEEL_DOWN:
-				scroll_relative(-1)
-			if event.button_index == BUTTON_LEFT:
-				var target = item_list.get_item_at_position(item_list.get_local_mouse_position(), true)
-				if target != -1:
-					item_list.select(target)
-		if event.doubleclick:
-			choice(item_list.get_selected_items()[0])
-		get_tree().set_input_as_handled()
-	if event is InputEventScreenTouch:
-		# solution from https://godotengine.org/qa/19386/how-to-detect-swipe-using-3-0
-		if event.pressed:
-			swipe_start = item_list.get_local_mouse_position()
-		else:
-			_calculate_swipe(item_list.get_local_mouse_position())
-		get_tree().set_input_as_handled()

@@ -32,6 +32,26 @@ func _ready():
 	set_process_input(false)
 
 
+func _input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_ENTER:
+				emit_signal("text_entered", text_edit.text)
+				hide_box()
+				get_tree().set_input_as_handled()	
+				return
+			if event.scancode == KEY_BACKSPACE:
+				text_edit.text = text_edit.text.left(text_edit.text.length() - 1)
+			else:
+				text_edit.text += char(event.unicode)
+			text_edit.caret_position = text_edit.text.length()
+		get_tree().set_input_as_handled()		
+	# keyboard events are fine, the control already handles them
+	# prevent mouse and touch events as far as this is active
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		get_tree().set_input_as_handled()
+
+
 func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
@@ -121,24 +141,3 @@ func ask_input():
 func text_entered(text: String):
 	emit_signal("text_entered", text)
 	hide_box()
-
-
-func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.scancode == KEY_ENTER:
-				emit_signal("text_entered", text_edit.text)
-				hide_box()
-				get_tree().set_input_as_handled()	
-				return
-			if event.scancode == KEY_BACKSPACE:
-				text_edit.text = text_edit.text.left(text_edit.text.length() - 1)
-			else:
-				text_edit.text += char(event.unicode)
-			text_edit.caret_position = text_edit.text.length()
-		get_tree().set_input_as_handled()		
-	# keyboard events are fine, the control already handles them
-	# prevent mouse and touch events as far as this is active
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		get_tree().set_input_as_handled()
-		
