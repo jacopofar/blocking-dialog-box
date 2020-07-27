@@ -1,7 +1,7 @@
 extends CanvasLayer
 class_name BlockingListSelection
 
-signal choice(index, text)
+signal choice_made(index, text)
 
 # size of the NinePatch frame
 export var patch_size: int = 12
@@ -34,13 +34,56 @@ func _ready():
 	set_process_input(false)
 
 
+func _input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_DOWN:
+				scroll_relative(1)
+			if event.scancode == KEY_UP:
+				scroll_relative(-1)
+			if event.scancode == KEY_PAGEUP:
+				scroll_relative(-5)
+			if event.scancode == KEY_PAGEDOWN:
+				scroll_relative(5)
+			if event.scancode == KEY_ENTER:
+				choice(item_list.get_selected_items()[0])
+			
+		get_tree().set_input_as_handled()	
+	if event is InputEventMouseButton:
+		if event.pressed and not event.doubleclick:
+			if event.button_index == BUTTON_WHEEL_UP:
+				scroll_relative(1)
+			if event.button_index == BUTTON_WHEEL_DOWN:
+				scroll_relative(-1)
+			if event.button_index == BUTTON_LEFT:
+				var target = item_list.get_item_at_position(item_list.get_local_mouse_position(), true)
+				if target != -1:
+					item_list.select(target)
+		if event.doubleclick:
+			choice(item_list.get_selected_items()[0])
+		get_tree().set_input_as_handled()
+	if event is InputEventScreenTouch:
+		# solution from https://godotengine.org/qa/19386/how-to-detect-swipe-using-3-0
+		if event.pressed:
+			swipe_start = item_list.get_local_mouse_position()
+		else:
+			_calculate_swipe(item_list.get_local_mouse_position())
+		get_tree().set_input_as_handled()
+
+
 func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
 	
 	background = NinePatchRect.new()
-	background.rect_position = Vector2(hmargin, window_size_y - height - bottom_margin)
-	background.rect_size = Vector2(window_size_x - 2 * hmargin, height)
+	background.rect_position = Vector2(
+		hmargin,
+		window_size_y - height - bottom_margin
+		)
+	background.rect_size = Vector2(
+		window_size_x - 2 * hmargin,
+		height
+		)
 	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
@@ -54,8 +97,14 @@ func show_box():
 	# preselect the first, it doesn't trigger the signal
 	item_list.select(0, true)
 	
-	item_list.rect_position = Vector2(hmargin + padding, window_size_y - height - bottom_margin + padding)
-	item_list.rect_size = Vector2(window_size_x - 2 * (hmargin + padding), height - 2 * padding)
+	item_list.rect_position = Vector2(
+		hmargin + padding,
+		window_size_y - height - bottom_margin + padding
+		)
+	item_list.rect_size = Vector2(
+		window_size_x - 2 * (hmargin + padding),
+		height - 2 * padding
+		)
 	var edit_style = StyleBoxFlat.new()
 	edit_style.set_bg_color(Color.transparent)
 	item_list.set("custom_styles/bg", edit_style)
@@ -97,7 +146,7 @@ func ask_value(elements: PoolStringArray):
 		print("WARNING: asking for input while input box is already open!")
 
 func choice(index: int):
-	emit_signal("choice", index, choices[index])
+	emit_signal("choice_made", index, choices[index])
 	hide_box()
 
 
@@ -128,40 +177,3 @@ func _calculate_swipe(swipe_end):
 			choice(item_list.get_selected_items()[0])
 		else:
 			choice(target)
-
-
-func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.scancode == KEY_DOWN:
-				scroll_relative(1)
-			if event.scancode == KEY_UP:
-				scroll_relative(-1)
-			if event.scancode == KEY_PAGEUP:
-				scroll_relative(-5)
-			if event.scancode == KEY_PAGEDOWN:
-				scroll_relative(5)
-			if event.scancode == KEY_ENTER:
-				choice(item_list.get_selected_items()[0])
-			
-		get_tree().set_input_as_handled()	
-	if event is InputEventMouseButton:
-		if event.pressed and not event.doubleclick:
-			if event.button_index == BUTTON_WHEEL_UP:
-				scroll_relative(1)
-			if event.button_index == BUTTON_WHEEL_DOWN:
-				scroll_relative(-1)
-			if event.button_index == BUTTON_LEFT:
-				var target = item_list.get_item_at_position(item_list.get_local_mouse_position(), true)
-				if target != -1:
-					item_list.select(target)
-		if event.doubleclick:
-			choice(item_list.get_selected_items()[0])
-		get_tree().set_input_as_handled()
-	if event is InputEventScreenTouch:
-		# solution from https://godotengine.org/qa/19386/how-to-detect-swipe-using-3-0
-		if event.pressed:
-			swipe_start = item_list.get_local_mouse_position()
-		else:
-			_calculate_swipe(item_list.get_local_mouse_position())
-		get_tree().set_input_as_handled()

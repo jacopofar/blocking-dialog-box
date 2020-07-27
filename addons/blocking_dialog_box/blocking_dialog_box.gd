@@ -39,45 +39,6 @@ func _ready():
 	set_process_input(false)
 
 
-func show_box():
-	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
-	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
-	background = NinePatchRect.new()
-	background.rect_position = Vector2(padding, window_size_y - height - padding)
-	background.rect_size = Vector2(window_size_x - 2 * padding, height)
-	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
-	background.patch_margin_top = patch_size
-	background.patch_margin_right = patch_size
-	background.patch_margin_bottom = patch_size
-	background.patch_margin_left = patch_size
-	add_child(background)
-
-	label = RichTextLabel.new()
-	label.bbcode_enabled = true
-	label.scroll_following = true
-	label.rect_position = Vector2(padding * 2 + patch_size, window_size_y - height + padding)
-	label.rect_size = Vector2(window_size_x - patch_size - padding * 2, height - patch_size  - padding * 2)
-	label.set("custom_colors/default_color", Color(0,0,0))
-
-	# this is the code to load a font and use it
-	var dynamic_font = DynamicFont.new()
-	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
-	dynamic_font.size = 18
-	label.set("custom_fonts/normal_font", dynamic_font)
-
-	add_child(label)
-	set_process_input(true)
-	set_process(true)
-	active = true
-
-func hide_box():
-	background.queue_free()
-	label.queue_free()
-	active = false
-	set_process_input(false)
-	set_process(false)
-	emit_signal("box_hidden")
-
 
 func _process(delta):
 	# sum the real time that passed and the time the user skipped by pressing input
@@ -114,6 +75,70 @@ func _process(delta):
 			break
 
 
+func _input(event):
+	if event is InputEventKey:
+		if event.is_pressed():
+			capture_input()
+		else:
+			get_tree().set_input_as_handled()
+	# the player can click to proceed, too, to read further
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		if event.pressed:
+			capture_input()
+		# do not let a rogue release event propagate
+		else:
+			get_tree().set_input_as_handled()
+
+
+func show_box():
+	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
+	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
+	background = NinePatchRect.new()
+	background.rect_position = Vector2(padding, window_size_y - height - padding)
+	background.rect_size = Vector2(window_size_x - 2 * padding, height)
+	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
+	background.patch_margin_top = patch_size
+	background.patch_margin_right = patch_size
+	background.patch_margin_bottom = patch_size
+	background.patch_margin_left = patch_size
+	add_child(background)
+
+	label = RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.scroll_following = true
+	label.rect_position = Vector2(
+		padding * 2 + patch_size,
+		window_size_y - height + padding
+		)
+	label.rect_size = Vector2(
+		window_size_x - patch_size - padding * 2,
+		height - patch_size  - padding * 2
+		)
+	label.set("custom_colors/default_color", Color(0,0,0))
+
+	# this is the code to load a font and use it
+	var dynamic_font = DynamicFont.new()
+	dynamic_font.font_data = load(
+		"res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf"
+		)
+	dynamic_font.size = 18
+	label.set("custom_fonts/normal_font", dynamic_font)
+
+	add_child(label)
+	set_process_input(true)
+	set_process(true)
+	active = true
+
+
+func hide_box():
+	background.queue_free()
+	label.queue_free()
+	active = false
+	set_process_input(false)
+	set_process(false)
+	emit_signal("box_hidden")
+
+
 func append_text(bbcode: String, duration: int):
 	var current_tag: String = ""
 	if not active:
@@ -136,19 +161,6 @@ func append_text(bbcode: String, duration: int):
 			else:
 				current_tag = "["
 
-func _input(event):
-	if event is InputEventKey:
-		if event.is_pressed():
-			capture_input()
-		else:
-			get_tree().set_input_as_handled()
-	# the player can click to proceed, too, to read further
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		if event.pressed:
-			capture_input()
-		# do not let a rogue release event propagate
-		else:
-			get_tree().set_input_as_handled()
 
 # helper to react to the input event, preventing it from propagating
 # and closing the dialogue box when done

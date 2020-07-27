@@ -14,8 +14,10 @@ Features:
 * __Blocks__ the input while dilogues is open
 * Decent unicode support (it includes Noto Sans font)
 
-![how input is given](screenshot_input.png)
-![how text is displayed](screenshot_text.png)
+![how input is given](screenshots/input.png)
+![how text is displayed](screenshots/text.png)
+![how a choice is made](screenshots/choice.png)
+
 
 ## How to use
 
@@ -102,7 +104,7 @@ same to select an element from a list:
 ```GDScript
 var bls: BlockingListSelection = get_node("/root/Main/BlockingListSelection")
 bls.ask_value(['green', 'blue', 'arrakis'])
-bls.connect("choice", self, "when_item_selected")
+bls.connect("choice_made", self, "when_item_selected")
 ```
 
 ## Input blocking
