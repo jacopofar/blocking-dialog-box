@@ -1,7 +1,7 @@
 extends CanvasLayer
 class_name BlockingListSelection
 
-signal choice(index, text)
+signal choice_made(index, text)
 
 # size of the NinePatch frame
 export var patch_size: int = 12
@@ -39,8 +39,14 @@ func show_box():
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
 	
 	background = NinePatchRect.new()
-	background.rect_position = Vector2(hmargin, window_size_y - height - bottom_margin)
-	background.rect_size = Vector2(window_size_x - 2 * hmargin, height)
+	background.rect_position = Vector2(
+		hmargin,
+		window_size_y - height - bottom_margin
+		)
+	background.rect_size = Vector2(
+		window_size_x - 2 * hmargin,
+		height
+		)
 	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
@@ -54,8 +60,14 @@ func show_box():
 	# preselect the first, it doesn't trigger the signal
 	item_list.select(0, true)
 	
-	item_list.rect_position = Vector2(hmargin + padding, window_size_y - height - bottom_margin + padding)
-	item_list.rect_size = Vector2(window_size_x - 2 * (hmargin + padding), height - 2 * padding)
+	item_list.rect_position = Vector2(
+		hmargin + padding,
+		window_size_y - height - bottom_margin + padding
+		)
+	item_list.rect_size = Vector2(
+		window_size_x - 2 * (hmargin + padding),
+		height - 2 * padding
+		)
 	var edit_style = StyleBoxFlat.new()
 	edit_style.set_bg_color(Color.transparent)
 	item_list.set("custom_styles/bg", edit_style)
@@ -97,7 +109,7 @@ func ask_value(elements: PoolStringArray):
 		print("WARNING: asking for input while input box is already open!")
 
 func choice(index: int):
-	emit_signal("choice", index, choices[index])
+	emit_signal("choice_made", index, choices[index])
 	hide_box()
 
 

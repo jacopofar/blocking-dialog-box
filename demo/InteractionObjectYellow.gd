@@ -21,10 +21,10 @@ func ask_number(_unused: String):
 		numbers.append("The number " + str(i))
 	bls.ask_value(numbers)
 	# warning-ignore:return_value_discarded
-	bls.connect("choice", self, "when_item_selected")
+	bls.connect("choice_made", self, "when_item_selected")
 
 func when_item_selected(_index: int, text: String):
-	bls.disconnect("choice", self, "when_item_selected")
+	bls.disconnect("choice_made", self, "when_item_selected")
 	# this is to avoid the double input, one to close the selection and the other to continue the dialog
 	# it's not striclty necessary, but nicer
 	bdb.hide_box()

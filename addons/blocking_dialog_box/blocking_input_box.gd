@@ -36,8 +36,14 @@ func show_box():
 	var window_size_x = ProjectSettings.get_setting("display/window/size/width")
 	var window_size_y = ProjectSettings.get_setting("display/window/size/height")
 	background = NinePatchRect.new()
-	background.rect_position = Vector2(hmargin, window_size_y - height - bottom_margin)
-	background.rect_size = Vector2(window_size_x - 2 * hmargin, height)
+	background.rect_position = Vector2(
+		hmargin,
+		window_size_y - height - bottom_margin
+		)
+	background.rect_size = Vector2(
+		window_size_x - 2 * hmargin,
+		height
+		)
 	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
@@ -46,8 +52,14 @@ func show_box():
 	add_child(background)
 	
 	text_edit = LineEdit.new()
-	text_edit.rect_position = Vector2(hmargin + padding, window_size_y - height - bottom_margin + padding)
-	text_edit.rect_size = Vector2(window_size_x - 2 * (hmargin + padding), height - 2 * padding)
+	text_edit.rect_position = Vector2(
+		hmargin + padding,
+		window_size_y - height - bottom_margin + padding
+		)
+	text_edit.rect_size = Vector2(
+		window_size_x - 2 * (hmargin + padding),
+		height - 2 * padding
+		)
 	var edit_style = StyleBoxFlat.new()
 	edit_style.set_bg_color(Color.transparent)
 	text_edit.set("custom_styles/normal", edit_style)
@@ -60,7 +72,8 @@ func show_box():
 
 	# this is the code to load a font and use it
 	var dynamic_font = DynamicFont.new()
-	dynamic_font.font_data = load("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
+	dynamic_font.font_data = load(
+		"res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
 	dynamic_font.size = 18
 	text_edit.set("custom_fonts/font", dynamic_font)
 	
@@ -82,14 +95,18 @@ func ask_input():
 	if OS.get_name() == "HTML5":
 		# extra ugly!
 		# possible alternatives:
-		# 1. Create an HTML input element and focus it to trigger the virtual keyboard to appear
+		# 1. Create an HTML input element and focus it to trigger the virtual
+		#    keyboard to appear
 		#    This is tricky because focus can only be given in an "input context"
 		# 2. Always show a virtual keyboard
 		#    Such a keyboard would probably destroy i18n and accessibility
 		# 3. Add button to switch
 		#    The user could see some button to invoke the JS window.prompt()
 		#    Could be hard to understand
-		var detected_mobile = JavaScript.eval("/Mobi|Android/i.test(navigator.userAgent)", true)
+		var detected_mobile = JavaScript.eval(
+			"/Mobi|Android/i.test(navigator.userAgent)",
+			true
+			)
 		if detected_mobile:
 			var text = JavaScript.eval("prompt('Enter:', '');", true)
 			emit_signal("text_entered", text)

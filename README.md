@@ -104,7 +104,7 @@ same to select an element from a list:
 ```GDScript
 var bls: BlockingListSelection = get_node("/root/Main/BlockingListSelection")
 bls.ask_value(['green', 'blue', 'arrakis'])
-bls.connect("choice", self, "when_item_selected")
+bls.connect("choice_made", self, "when_item_selected")
 ```
 
 ## Input blocking
