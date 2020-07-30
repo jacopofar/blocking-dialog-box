@@ -27,6 +27,7 @@ You can see the included demo for a complete usage example, but here's a textual
 
 #### Recommended way:
 The plugin is in the Godot asset library and you can install it directly from the editor. Go to `AssetLib` and search for "blocking dialog boxes". You need only the *addons* folder.
+After installing, __enable__ it from *project settings -> addons*
 
 #### Direct manual install
 Otherwise, this repository works as a Godot project that you can use to run the demo.
