@@ -4,6 +4,10 @@ class_name BlockingInputBox
 signal text_entered
 
 
+# Box texture
+export var texture: Texture
+# Font for the box
+export var font: DynamicFont
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe
@@ -64,7 +68,7 @@ func show_box():
 		window_size_x - 2 * hmargin,
 		height
 		)
-	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
+	background.texture = texture
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
 	background.patch_margin_bottom = patch_size
@@ -87,15 +91,7 @@ func show_box():
 	text_edit.set("custom_colors/font_color", Color(0,0,0))
 	text_edit.caret_blink = true
 	text_edit.expand_to_text_length = false
-	
-
-
-	# this is the code to load a font and use it
-	var dynamic_font = DynamicFont.new()
-	dynamic_font.font_data = load(
-		"res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf")
-	dynamic_font.size = 18
-	text_edit.set("custom_fonts/font", dynamic_font)
+	text_edit.set("custom_fonts/font", font)
 	
 	add_child(text_edit)
 	set_process_input(true)
