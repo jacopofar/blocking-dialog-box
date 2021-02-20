@@ -22,8 +22,8 @@ var elapsed: int = 0
 # extra time added by the player by pressing the input button
 # used to accelerate the dialogue
 var skipped_time: int = 0
-# how much the time will be accelerated for a single pressure of the input button
-var skip_interval: int = 300
+# how much the time will be accelerated for a single pressure of the input button, in seconds
+var skip_interval: float = 18.0
 
 var label: RichTextLabel
 var background: NinePatchRect
@@ -42,7 +42,7 @@ func _ready():
 
 func _process(delta):
 	# sum the real time that passed and the time the user skipped by pressing input
-	elapsed += delta * 1000 + skipped_time
+	elapsed += delta * 60.0 + skipped_time
 	skipped_time = 0
 	while true:
 		if elements.size() == 0:
@@ -74,6 +74,9 @@ func _process(delta):
 		else:
 			break
 
+func reset_timers():
+	elapsed = 0
+	skipped_time = 0
 
 func _input(event):
 	if event is InputEventKey:
@@ -125,6 +128,7 @@ func show_box():
 	label.set("custom_fonts/normal_font", dynamic_font)
 
 	add_child(label)
+	reset_timers()
 	set_process_input(true)
 	set_process(true)
 	active = true
@@ -168,6 +172,7 @@ func capture_input():
 	if in_break:
 		in_break = false
 		get_tree().set_input_as_handled()
+		reset_timers()
 		set_process(true)
 		emit_signal("break_ended", break_content)
 		return
