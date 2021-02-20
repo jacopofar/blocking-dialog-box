@@ -22,8 +22,8 @@ var elapsed: int = 0
 # extra time added by the player by pressing the input button
 # used to accelerate the dialogue
 var skipped_time: int = 0
-# how much the time will be accelerated for a single pressure of the input button
-var skip_interval: int = 300
+# how much the time will be accelerated for a single pressure of the input button, in seconds
+var skip_interval: int = 5
 
 var label: RichTextLabel
 var background: NinePatchRect
@@ -42,7 +42,7 @@ func _ready():
 
 func _process(delta):
 	# sum the real time that passed and the time the user skipped by pressing input
-	elapsed += delta * 1000 + skipped_time
+	elapsed += delta * 60.0 + skipped_time
 	skipped_time = 0
 	while true:
 		if elements.size() == 0:
