@@ -6,9 +6,9 @@ signal break_ended
 signal box_hidden
 
 # Box texture
-export var texture: Texture
+export var texture: Texture = preload("res://addons/blocking_dialog_box/dialog_frame.png")
 # Font for the box
-export var font: DynamicFont
+export var font: DynamicFont = preload("res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.tres")
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe
