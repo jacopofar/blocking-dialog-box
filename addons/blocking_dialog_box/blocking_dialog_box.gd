@@ -5,7 +5,10 @@ signal break_reached
 signal break_ended
 signal box_hidden
 
-
+# Box texture
+export var texture: Texture
+# Font for the box
+export var font: DynamicFont
 # size of the NinePatch frame
 export var patch_size: int = 12
 # distance to let the text breathe
@@ -96,7 +99,7 @@ func show_box():
 	background = NinePatchRect.new()
 	background.rect_position = Vector2(padding, window_size_y - height - padding)
 	background.rect_size = Vector2(window_size_x - 2 * padding, height)
-	background.texture = load("res://addons/blocking_dialog_box/dialog_frame.png")
+	background.texture = texture
 	background.patch_margin_top = patch_size
 	background.patch_margin_right = patch_size
 	background.patch_margin_bottom = patch_size
@@ -115,14 +118,7 @@ func show_box():
 		height - patch_size  - padding * 2
 		)
 	label.set("custom_colors/default_color", Color(0,0,0))
-
-	# this is the code to load a font and use it
-	var dynamic_font = DynamicFont.new()
-	dynamic_font.font_data = load(
-		"res://addons/blocking_dialog_box/NotoSansCJKsc-Regular.otf"
-		)
-	dynamic_font.size = 18
-	label.set("custom_fonts/normal_font", dynamic_font)
+	label.set("custom_fonts/normal_font", font)
 
 	add_child(label)
 	set_process_input(true)
