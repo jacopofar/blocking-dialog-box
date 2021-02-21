@@ -1,8 +1,8 @@
 # Menu and dialog GUI for Godot
 
-This project contains custom node types to easily implement a dialogue system with input and choices in __Godot 3.2__.
+This project contains custom node types to easily implement a dialogue box with input and choices in __Godot 3.2__. It can automatically block the input.
 
-It's designed to work with mouse, keyboard and multitouch, and in HTML5 deployments.
+It's designed to work with mouse, keyboard and multitouch, and in HTML5 deployments. For complex dialogue trees look at [dialogic](https://github.com/coppolaemilio/dialogic)
 
 Features:
 
