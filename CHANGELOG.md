@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-02-21
+
+### Added
+- Export style and font to make customization easier (thanks @jbahamon)
+
+### Fix
+- Reset timers when needed (thanks @jbahamon)
+
 ## [1.0.0] - 2020-07-23
 
 ### Added
