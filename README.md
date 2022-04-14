@@ -64,7 +64,7 @@ To detect breaks do this:
 
 ```GDScript
 func your_function():
-  bdb.append_text("wait for input and rotate[break clockwise]\n", 10)
+ 	bdb.append_text("wait for input and rotate[break clockwise]\n", 10)
 	var direction: String = yield(bdb, "break_ended")
 	rotate_me(direction)
 	bdb.append_text("wait for input and rotate back[break counterclockwise]\n", 10)
